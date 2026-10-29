@@ -10,3 +10,6 @@ build.log
 *.mp3
 *.m4a
 *.flac
+
+# Packaged releases
+dist/

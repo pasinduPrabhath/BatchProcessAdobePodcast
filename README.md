@@ -21,14 +21,39 @@ The free version only accepts one file at a time, so you normally have to sit th
 - Live log at the bottom of the window
 - Supports `mp3`, `wav`, `m4a`, `flac`, `aac`, `ogg`, `mp4`, `mov`, `aiff`
 - One Swift file, no dependencies
+- Universal app for Apple Silicon and Intel Macs, downloadable as a `.dmg`
 
 ## Requirements
 
-- macOS 12 or newer
-- Xcode Command Line Tools (`xcode-select --install`)
+- macOS 12 or newer (Apple Silicon or Intel)
 - An Adobe account (a free one works)
 
 ## Install
+
+### Download (recommended)
+
+1. Go to the [latest release](https://github.com/pasinduPrabhath/BatchProcessAdobePodcast/releases/latest) and download `AudioBatch-x.y.z.dmg`.
+2. Open the `.dmg` and drag **AudioBatch** into the **Applications** folder.
+3. Open AudioBatch from Applications.
+
+#### "AudioBatch can't be opened" / "Apple could not verify…"
+
+The app is not notarized by Apple (that requires a paid developer account), so macOS blocks it the first time. To allow it once:
+
+- **macOS 15 and newer:** open the app, click **Done**, then go to **System Settings → Privacy & Security**, scroll down and click **Open Anyway** next to the AudioBatch message, and confirm.
+- **macOS 12 to 14:** right-click (or Control-click) AudioBatch in Applications, choose **Open**, then click **Open** again.
+
+Or run this once in Terminal:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/AudioBatch.app
+```
+
+After that it opens normally. If you would rather not trust a downloaded binary, build it yourself from source (below); it is a single Swift file you can read first.
+
+### Build from source
+
+Needs Xcode Command Line Tools (`xcode-select --install`).
 
 ```bash
 git clone https://github.com/pasinduPrabhath/BatchProcessAdobePodcast.git
@@ -36,13 +61,26 @@ cd BatchProcessAdobePodcast
 bash build.sh
 ```
 
-`build.sh` compiles `App.swift` into `AudioBatch.app` and opens it. You can also double-click `build.command` in Finder to rebuild and relaunch the app.
+`build.sh` compiles `App.swift` into `AudioBatch.app` and opens it. You can also double-click `build.command` in Finder to rebuild and relaunch the app. Because you build it yourself, macOS Gatekeeper will not block it.
 
-Because you build it yourself, macOS Gatekeeper will not block it.
+### Making a release (maintainers)
+
+`package.sh` builds a universal (Apple Silicon + Intel) app and packs it into `dist/AudioBatch-<version>.dmg`:
+
+```bash
+bash package.sh 1.0.0
+```
+
+To publish it on GitHub, push a version tag. The [Release workflow](.github/workflows/release.yml) builds the `.dmg` on a macOS runner and attaches it to a new GitHub Release:
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
 
 ## Usage
 
-1. Start the app. Adobe Podcast Enhance opens in the window.
+1. Open AudioBatch. Adobe Podcast Enhance opens in the window.
 2. Log in with your Adobe email and password. "Continue with Google" often does not work inside embedded browsers, so use email login if it fails.
 3. Click **Input folder…** and choose the folder with your recordings.
 4. Click **Output folder…** and choose where results should go.

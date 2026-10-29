@@ -1,0 +1,29 @@
+name: Release
+
+# Push a tag like v1.0.0 to build the .dmg and publish it as a GitHub Release.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build DMG
+        run: bash package.sh "${GITHUB_REF_NAME}"
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AudioBatch-dmg
+          path: dist/*.dmg
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.dmg
+          generate_release_notes: true
