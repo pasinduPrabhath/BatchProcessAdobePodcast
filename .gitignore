@@ -1,0 +1,12 @@
+# Build output
+AudioBatch.app/
+build.log
+
+# macOS
+.DS_Store
+
+# Audio you might test with
+*.wav
+*.mp3
+*.m4a
+*.flac
